@@ -9,6 +9,7 @@ The output will look like this. <br/>
 
 # Requirements
 Powershell 3.0<br/>
+ConfigManager Console on the machine that runs this script<br/>
 IIS setup with the file from the "IIS" folder<br/>
 
 # What to Edit to Make This Work For You

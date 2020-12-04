@@ -13,6 +13,7 @@ IIS setup with the file from the "IIS" folder<br/>
 
 # What to Edit to Make This Work For You
 Varibales - edit $pageURL to point to your desired webpage (create a cname in dns for this), <br/>
+            edit $IISLocation to your IIS folder, <br/>
             edit $emailSMTPserver to your SMTP server, <br/>
             edit $emailTo to who you want to receive the email, <br/>
             edit $emailFrom to who you want the from/reply to email address to be, <br/>

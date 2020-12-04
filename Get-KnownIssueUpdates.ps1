@@ -28,6 +28,7 @@ $LDayofMonth = get-date $LastDayofMonth -Format "MM/dd/yyyy" #format to easier r
 $CurrentMonth = Get-Date -UFormat %b #Current month abbreviated
 $CurrentYear = (Get-Date).year
 $pageURL = "http://yoururlgoeshere" #This will be the local webpage URL. 
+$IISLocation = "C:\inetpub\yourIISfolderlocationgoeshere\index.html"
 
 #Declare some variables
 [string]$emailBody = "Please use the link below to review the Known Issues for this month's Microsoft Updates. Report any possible issues to the group.<br /><br />$($pageURL)<br /><br />This email is sent automatically. "
@@ -131,7 +132,7 @@ foreach ($SoftwareUpdate in $SoftwareUpdates)
 #Get the template file
 $template = (Get-Content -Path C:\inetpub\SUKnownIssues\template.html -raw)
 #Place variables and new $html into the template file and rename it as index.html
-Invoke-Expression "@`"`r`n$template`r`n`"@" | Set-Content -Path "C:\inetpub\SUKnownIssues\index.html"
+Invoke-Expression "@`"`r`n$template`r`n`"@" | Set-Content -Path $IISLocation
 
 #Let's send an email to the group to remind them to look at these upates!
 Send-MailMessage -To $emailTo -From $emailFrom -BodyAsHtml $emailBody -Subject $emailSubject -SmtpServer $emailSMTPserver -Priority High

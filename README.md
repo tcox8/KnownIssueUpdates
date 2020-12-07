@@ -17,4 +17,4 @@ Varibales - edit $pageURL to point to your desired webpage (create a cname in dn
             edit $IISLocation to your IIS folder, <br/>
             edit $emailSMTPserver to your SMTP server, <br/>
             edit $emailTo to who you want to receive the email, <br/>
-            edit $emailFrom to who you want the from/reply to email address to be, <br/>
+            edit $emailFrom to who you want the from/reply email address to be <br/>

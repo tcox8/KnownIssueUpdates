@@ -13,7 +13,8 @@
 # Requirements: SCCM Console must be installed on the machine running this
 #             
 # Change Log:   Ver 1.1 - Reworked to group updates by KB. This helps limit the size
-#                         of the html page created and makes it easier to read.
+#                         of the html page created and makes it easier to read. Added
+#                         more try/catch as well as logging.
 #
 #               Ver 1.0 - Initial release
 #
@@ -71,15 +72,15 @@ $CurrentYear = (Get-Date).year
 Write-Log -logdata "Current Month: $($CurrentMonth) $($CurrentYear)"
 Write-Log -logdata "First day of the month: $($FDayofMonth)"
 Write-Log -logdata "Last day of the month: $($LDayofMonth)"
-$pageURL = "http://knownissueupdates.hosp.uhhg.org" #This will be the local webpage URL. 
-$IISLocation = "C:\inetpub\SUKnownIssues\index.html" #This is the location to the IIS folder and new index.html file
+$pageURL = "[http://yoururlgoeshere]" #This will be the local webpage URL. 
+$IISLocation = "C:\inetpub\[yourIISfolderlocationgoeshere]\index.html"\index.html" #This is the location to the IIS folder and new index.html file
 
 #Declare some variables
 [string]$emailBody = "Please use the link below to review the Known Issues for this month's Microsoft Updates. Report any possible issues to the group.<br /><br />$($pageURL)<br /><br />This email is sent automatically. "
 [string]$emailSubject = "$($CurrentMonth)-$($CurrentYear) - Known Issue Updates"
-[string]$emailFrom = "DoNotReply@uhhg.org"
-[string]$emailTo = "Networking@uhhg.org"
-[string]$emailSMTPserver = 'smtpprint.hosp.uhhg.org'
+[string]$emailFrom = "[YourFromEmailGoesHere]"
+[string]$emailTo = "[YourToEmailGoesHere]"
+[string]$emailSMTPserver = '[YourSMTPserverGoesHere]'
 
 #Get Site Code. Note: Console must be on this machine for this to work.
 $SiteCode = Get-PSDrive -PSProvider CMSite

@@ -1,10 +1,13 @@
 # KnownIssueUpdates
 This script will pull the monthly updates and find any known issues. The output is parsed and built into a webpage. An email is sent to remind the receiver to look at the webpage. The script should be setup to run as a scheduled task every second tuesday of the month. 
 
+Version 2 - I have updated the script to group KB article numbers and show the affected OSes. This significantly reduces the output and makes things easier to read.I also added logging. 
+
 
 The output will look like this. <br/>
 
 
+![Table Example](ExampleImages/Table.PNG?raw=true)
 
 
 # Requirements

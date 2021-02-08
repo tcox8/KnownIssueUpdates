@@ -5,6 +5,7 @@ This script will pull the monthly updates and find any known issues. The output 
 The output will look like this. <br/>
 
 
+![Table Example](ExampleImages/Table.PNG?raw=true)
 
 
 # Requirements

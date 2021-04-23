@@ -3,18 +3,19 @@
 # 
 # Special Thanks: Adapted from Jeff Hancock's script.
 #
-# Version : 1.1
+# Version : 1.2
 # Created : 11/27/2020
-# Modified : 02/08/2021
+# Modified : 04/23/2021
 #
 # Purpose : This script updates a wepbage that displays the current month's known
 #           issue updates.
 #
 # Requirements: SCCM Console must be installed on the machine running this
 #             
-# Change Log:   Ver 1.1 - Reworked to group updates by KB. This helps limit the size
-#                         of the html page created and makes it easier to read. Added
-#                         more try/catch as well as logging.
+# Change Log:   Ver 1.2 - Fixed some formatting changes. Fixed regex for symptom/workaround text.
+#
+#               Ver 1.1 - Reworked to group updates by KB. This helps limit the size
+#                         of the html page created and makes it easier to read.
 #
 #               Ver 1.0 - Initial release
 #
@@ -177,7 +178,7 @@ foreach ($group in $GroupedSUs)
                                         Write-Log -logdata "Warning! This is a known issue update!"
                                         $Script:tablenew = $table
                                         [regex]$patternTR = '<tr>' #Regex used for the KBTitle (more info later)
-                                        [regex]$patternTD = '<td><strong>' #Regex used for the "symptom" and "workaround" headers (more later)
+                                        [regex]$patternTD = '<td>\s*<p><strong>' #Regex used for the "symptom" and "workaround" headers (more later)
                                         [regex]$patternCrapTable = '<tr role="row">[\s\S]*?<\/tr>' #Regex used to fix MS wording issues for the Update Title (more later)
                                         [regex]$patternBadLinks = '<td>This issue is resolved in <[\s\S]*?<\/td>' #Regex used to fix bad/dead links (more later)
                                         [regex]$patternBadLinksKB = '(?<=blank">KB)[\s\S]*?(?=<\/a>)' #Regex to get the KB for the dead link (more later)
@@ -196,7 +197,7 @@ foreach ($group in $GroupedSUs)
                                                 $tablenew = $PatternTR.replace($tablenew,"<tr><td class = KBTitle colspan = '2' >KB$SUArticleID</td></tr><tr>",1) #If data isn't broke, just create the title. Also creating the title cell to span across both columns. 
                                             }
                                         
-                                        $tablenew = $PatternTD.replace($tablenew,"<td class=headers><strong>",2) #this creates/places the "headers" class (used in CSS file) on the Symptom/Workaround cells.
+                                        $tablenew = $PatternTD.replace($tablenew,"<td class=headers><p><strong>",2) #this creates/places the "headers" class (used in CSS file) on the Symptom/Workaround cells.
                                         #This if block is to find the broken links.
                                         If ($tablenew -match $patternBadLinks) 
                                             {

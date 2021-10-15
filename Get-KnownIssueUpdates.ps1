@@ -3,16 +3,18 @@
 # 
 # Special Thanks: Adapted from Jeff Hancock's script.
 #
-# Version : 1.2
+# Version : 1.3
 # Created : 11/27/2020
-# Modified : 04/23/2021
+# Modified : 10/15/2021
 #
 # Purpose : This script updates a wepbage that displays the current month's known
 #           issue updates.
 #
 # Requirements: SCCM Console must be installed on the machine running this
 #             
-# Change Log:   Ver 1.2 - Fixed some formatting changes. Fixed regex for symptom/workaround text.
+# Change Log:   Ver 1.3 - Fixed some formatting changes due to Microsoft adding a dropdown FAQ. Also added a title to the webpage.
+#
+#               Ver 1.2 - Fixed some formatting changes. Fixed regex for symptom/workaround text.
 #
 #               Ver 1.1 - Reworked to group updates by KB. This helps limit the size
 #                         of the html page created and makes it easier to read.
@@ -70,6 +72,7 @@ $FDayofMonth = get-date $FirstDayofMonth -Format "MM/dd/yyyy" #format to easier 
 $LDayofMonth = get-date $LastDayofMonth -Format "MM/dd/yyyy" #format to easier reading
 $CurrentMonth = Get-Date -UFormat %b #Current month abbreviated
 $CurrentYear = (Get-Date).year
+[string]$Title = '<h1 class = "MainTitle">' + (Get-Date -UFormat %B) + " " + $CurrentYear + " Updates</h1>" #Title for the webpage
 Write-Log -logdata "Current Month: $($CurrentMonth) $($CurrentYear)"
 Write-Log -logdata "First day of the month: $($FDayofMonth)"
 Write-Log -logdata "Last day of the month: $($LDayofMonth)"
@@ -109,6 +112,9 @@ Write-Log -logdata "Grouped together the software updates into $($GroupedSUs.Cou
 
 #This is our array that will hold all the HTML tables
 $html = @()
+
+#Add our Title to the HTML page
+$html += $Title
 
 #Loop through each group
 foreach ($group in $GroupedSUs)
@@ -150,7 +156,7 @@ foreach ($group in $GroupedSUs)
                 [string]$KnownIssue2 = ($KBArticle.details.body | Where-Object {$_.Title -eq "Known issues in this security update"}).Content            
 
                 #Here we are proceeding ONLY if we found useful info under the KnownIssues in the web request. 
-                If((($KnownIssue1) -OR ($KnownIssue2)) -AND (($knownissue1 -notlike "*not*aware of any issue*") -AND ($knownissue2 -notlike "*not*aware of any issue*")))
+                If((($KnownIssue1) -OR ($KnownIssue2)) -AND (($knownissue1 -notlike "*not*aware*of*any*issue*") -AND ($knownissue2 -notlike "*not*aware*of*any*issue*")))
                     {
                         If ($Count -eq 1)
                             {                                  
@@ -167,11 +173,13 @@ foreach ($group in $GroupedSUs)
                                 #Some more wording changes caused this. Have to search if the class name for the table is different
                                 If ((Select-String -InputObject $table -pattern '<table class="table ng-scope">').matches.value)
                                     {
-                                        $tablereplace = '<table class="table ng-scope">'
+                                        #Added regex because MS decided to put a drop down FAQ randomly on some pages.
+                                        [regex]$tablereplace = '^([\s\S]*)<table class="table ng-scope">'
                                     }
                                 Else
                                     {
-                                        $tablereplace = '<table class="table">'
+                                       #Added regex because MS decided to put a drop down FAQ randomly on some pages.
+                                       [regex]$tablereplace = '^([\s\S]*)<table class="table">'
                                     }
                                 
                                         #Set a new variable to our table data
@@ -184,8 +192,9 @@ foreach ($group in $GroupedSUs)
                                         [regex]$patternBadLinksKB = '(?<=blank">KB)[\s\S]*?(?=<\/a>)' #Regex to get the KB for the dead link (more later)
                                         [regex]$patternAffSoftSingle = "</tbody>" #Regex to get teh end of the table for putting Affected Software list (more later)
                                         [regex]$patternAffSoftMultiple = "</a></td></tr></tbody>" #Regex to get the end of the table for putting Affected Software list (more later)
-                                        $tablenew = $tablenew.replace($tablereplace,'<table class="table" border="2" cellspacing="3" cellpadding="5">') #Replace parts of the string to create a class for the table as well as border, cellspacing, etc.
-                                        #This if block is to fix the title. MS moves the title below the Symptom/Workaround. 
+                                        $tablenew = $tablereplace.replace($tablenew,'<table class="table" border="2" cellspacing="3" cellpadding="5">') #Replace parts of the string to create a class for the table as well as border, cellspacing, etc.
+                                        
+					#This if block is to fix the title. MS moves the title below the Symptom/Workaround. 
                                         IF ($tablenew -match $patternCrapTable)
                                             {
                                                 $tablenew = $patternCrapTable.replace($tablenew,'',1) #Wipe out the data
